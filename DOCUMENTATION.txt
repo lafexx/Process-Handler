@@ -1,6 +1,6 @@
 [VARIABLES]
 
-public List<Task> tasks; = Holds all the current tasks the process hander is computing
+public List<Task> tasks; = Holds all the current tasks the process handler is computing
 public Task task_information; = Holds all task information for the current task
 private int current_task_index; = tasks list index of the current task
 private bool processHandler_tasks_complete; = true or false depending on whether the process handler has completed all set tasks or not
