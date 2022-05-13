@@ -7,10 +7,10 @@ public class Process_Handler : Monobehaviour
     public Task task_information;
     private int current_task_index;
     private bool processHandler_tasks_complete;
+    private bool processHandler_waiting_for_tasks_complete;
 
     private void Start()
     {
-        Debug.Log(TryToSwitchTask());
     }
 
     private IEnumerator SwitchTask()
@@ -42,13 +42,15 @@ public class Process_Handler : Monobehaviour
         return result;
     }
 
-    public bool TryToCreateTask(bool result = false)
+    public bool TryToCreateTask(bool result = false, string task_name, string task_attached_function)
     {
         Task reference_created_task = null;
 
         Try
         {
             Task created_task = new Task();
+            created_task.Task_Name = task_name;
+            created_task.Attached_Function = task_attached_function;
             tasks.Add(created_task);
             reference_created_task = created_task   
         }
@@ -86,6 +88,35 @@ public class Process_Handler : Monobehaviour
         if (reference_deleted_task == null)
         {
             result = true;
+        }
+    }
+
+    public string WhenTasksComplete(Object target_class, string function_name)
+    {
+        string result = "Failed, something went extremely wrong";
+
+        if (processHandler_waiting_for_tasks_complete)
+        {
+            string result = "Failed to execute function, already waiting for tasks to complete";
+        }          
+        else
+        {
+            StartCoroutine(WaitForTasksToComplete(target_class, function_name));
+            result = "Executed function, waiting for tasks to complete then running: " + $"{function_name} in {target_class}";
+        }
+        
+        return result;
+    }
+
+    private IEnumerator WaitForTasksComplete(Object target_class, string function_name)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
+            if (processHandler_tasks_complete)
+            {
+            target_class.function_name();
+            }
         }
     }
 }
