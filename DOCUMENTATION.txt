@@ -1,0 +1,31 @@
+[VARIABLES]
+
+public List<Task> tasks; = Holds all the current tasks the process hander is computing
+public Task task_information; = Holds all task information for the current task
+private int current_task_index; = tasks list index of the current task
+private bool processHandler_tasks_complete; = true or false depending on whether the process handler has completed all set tasks or not
+private bool processHandler_waiting_for_tasks_complete; = true if the process handler is waiting to run a function when the tasks complete
+
+[FUNCTIONS]
+
+SwitchTask:
+This IEnumerator Function is called whenever the process starts computing tasks. It periodically tries to switch the task and if all the tasks have been completed
+then it will stop running the function and update some important variables.
+
+TryToSwitchTask:
+checks if the current task is complete or not and returns the result
+
+TryToCreateTask: 
+PARAMS: (bool result holds the result of the process, string task_name sets the created tasks name to this, Object task_target will run the specified function -> in
+this class, string task_attached_function this is the function that will try to be ran via the task target <-)
+Tries to create a new task with the inputted parameters 
+
+TryToRemoveTask:
+PARAMS: (bool result holds the result of the process, Task task_to_delete this is the task that the function will try to remove from the process)
+Tries to remove the specified task from the process.
+
+WhenTasksComplete:
+PARAMS: Object target_class this is the class that the function -> will try to be called from, string function_name this is the name of the function that will try to
+be called from the specified class <-)
+Runs the inputted function when the process handler has completed all of the tasks.
+
