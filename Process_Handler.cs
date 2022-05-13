@@ -7,10 +7,6 @@ public class Process_Handler : Monobehaviour
     private bool processHandler_tasks_complete;
     private bool processHandler_waiting_for_tasks_complete;
 
-    private void Start()
-    {
-    }
-
     private IEnumerator SwitchTask()
     {
         while (true)
