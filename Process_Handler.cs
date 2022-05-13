@@ -1,9 +1,7 @@
 
 public class Process_Handler : Monobehaviour
 {
-    // create a process handler that switches between the given tasks one after another (switch factor is the task being completed)
-
-    pubic List<Task> tasks;
+    public List<Task> tasks;
     public Task task_information;
     private int current_task_index;
     private bool processHandler_tasks_complete;
@@ -42,13 +40,14 @@ public class Process_Handler : Monobehaviour
         return result;
     }
 
-    public bool TryToCreateTask(bool result = false, string task_name, string task_attached_function)
+    public bool TryToCreateTask(bool result = false, string task_name, Object task_target, string task_attached_function)
     {
         Task reference_created_task = null;
 
         Try
         {
             Task created_task = new Task();
+            created_task.Task_Target = task_target;
             created_task.Task_Name = task_name;
             created_task.Attached_Function = task_attached_function;
             tasks.Add(created_task);
@@ -115,7 +114,7 @@ public class Process_Handler : Monobehaviour
             yield return new WaitForSeconds(0.1f);
             if (processHandler_tasks_complete)
             {
-            target_class.function_name();
+                target_class.Invoke(function_name, 0);
             }
         }
     }
