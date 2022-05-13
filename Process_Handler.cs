@@ -115,7 +115,10 @@ public class Process_Handler : Monobehaviour
             if (processHandler_tasks_complete)
             {
                 target_class.Invoke(function_name, 0);
+                break;
             }
         }
+        
+        StopCoroutine(WaitForTasksComplete(target_class, function_name));
     }
 }
