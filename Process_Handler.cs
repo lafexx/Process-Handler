@@ -6,10 +6,28 @@ public class Process_Handler : Monobehaviour
     pubic List<Task> tasks;
     public Task task_information;
     private int current_task_index;
+    private bool processHandler_tasks_complete;
 
     private void Start()
     {
         Debug.Log(TryToSwitchTask());
+    }
+
+    private IEnumerator SwitchTask()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.25f);
+            Debug.Log(TryToSwitchTask());
+
+            if (!TryToSwitchTask())
+            {
+                break;
+            }
+        }
+
+        Debug.Log("Process Handler: All tasks completed");
+        processHandler_tasks_complete = true;
     }
 
     public bool TryToSwitchTask(bool result = false)
@@ -26,8 +44,28 @@ public class Process_Handler : Monobehaviour
 
     public bool TryToCreateTask(bool result = false)
     {
-        Task created_task = new Task();
-        tasks.Add(created_task);
+        Task reference_created_task = null;
+
+        Try
+        {
+            Task created_task = new Task();
+            tasks.Add(created_task);
+            reference_created_task = created_task   
+        }
+        Catch
+        {
+            result = false;
+        }
+
+        if (reference_created_task != null)
+        {
+            result = true;
+            if (processHandler_tasks_complete)
+            {
+                processHandler_tasks_complete = false;
+                StartCoroutine(SwitchTask());
+            }
+        }
 
         return result;
     }
