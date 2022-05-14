@@ -31,5 +31,9 @@ public class Example : Monobehaviour
     public static void WhenTasksComplete()
     {
         Debug.Log("All the tasks have been completed");
+        // trying to add a tak to the active process
+        Task created_task = process_handler.TryToCreateTask("Task 1 ", this, "FUNCTION_1");
+        // adding the new task to the retry list (this makes it so the task repeats)
+        process_handler.AddTaskToRetryList(created_task);
     }
 }
