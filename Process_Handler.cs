@@ -1,17 +1,25 @@
-
 public class Process_Handler : Monobehaviour
 {
     public List<Task> tasks;
+    public List<Task> retry_list;
     public Task task_information;
     private int current_task_index;
+    private float Task_Switch_Rate;
     private bool processHandler_tasks_complete;
     private bool processHandler_waiting_for_tasks_complete;
+    public bool Retry_List_Enabled;
+
+    private void Start()
+    {
+        Retry_List_Enabled = true;
+        Task_Switch_Rate = 0.25f;
+    }
 
     private IEnumerator SwitchTask()
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(Task_Switch_Rate);
             Debug.Log(TryToSwitchTask());
 
             if (!TryToSwitchTask())
@@ -36,7 +44,7 @@ public class Process_Handler : Monobehaviour
         return result;
     }
 
-    public bool TryToCreateTask(bool result = false, string task_name, Object task_target, string task_attached_function)
+    public Task TryToCreateTask(string task_name, Object task_target, string task_attached_function)
     {
         Task reference_created_task = null;
 
@@ -51,12 +59,12 @@ public class Process_Handler : Monobehaviour
         }
         Catch
         {
-            result = false;
+            Debug.Log("failed to create task");
         }
 
         if (reference_created_task != null)
         {
-            result = true;
+            Debug.Log("Task created");
             if (processHandler_tasks_complete)
             {
                 processHandler_tasks_complete = false;
@@ -64,7 +72,8 @@ public class Process_Handler : Monobehaviour
             }
         }
 
-        return result;
+
+        return reference_created_task;
     }
 
     public bool TryToRemoveTask(bool result = false, Task task_to_delete)
@@ -111,10 +120,59 @@ public class Process_Handler : Monobehaviour
             if (processHandler_tasks_complete)
             {
                 target_class.Invoke(function_name, 0);
-                break;
             }
         }
-        
-        StopCoroutine(WaitForTasksComplete(target_class, function_name));
+    }
+
+    public string ToggleRetryList()
+    {
+        string result = "Failed, something went extremely wrong";
+
+        if (Retry_List_Enabled)
+        {
+            Retry_List_Enabled = false;
+            result = "Retry list disabled";
+        }
+        else
+        {
+            Retry_List_Enabled = true;
+            result = "Retry list enabled";
+        }
+
+        return result;
+    }
+
+    public string AdjustTaskSwitchRate(float new_rate)
+    {
+        string result = "Failed, something went extremely wrong";
+
+        if (new_rate > 0.0f)
+        {
+            Task_Switch_Rate = new_rate;
+            result = "Task switch rate adjusted to: " + $"{new_rate}";
+        }
+        else
+        {
+            result = "Task switch rate failed to adjust, must be greater than 0";
+        }
+
+        return result;
+    }
+
+    public string AddTaskToRetryList(Task task_to_add_to_retry_list)
+    {
+        string result = "Failed, something went extremely wrong";
+
+        if (Retry_List_Enabled)
+        {
+            retry_list.Add(task_to_add_to_retry_list);
+            result = "Task added to retry list";
+        }
+        else
+        {
+            result = "Retry list is disabled, cannot add task to retry list";
+        }
+
+        return result;
     }
 }
