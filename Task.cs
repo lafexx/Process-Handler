@@ -5,6 +5,7 @@ public class Task : Monobehaviour
     public string Attached_Function;
     public bool Task_Complete;
     public string Task_Name;
+    public bool Task_Added_To_Retry_List;
 
     public void Start()
     {
@@ -14,9 +15,9 @@ public class Task : Monobehaviour
         }
         else
         {
-            Task_Complete = true; // this is a temporary solution
+            Task_Complete = true;
+            Process_Handler.TryToCreateTask(Task_Name, Task_Target, Attached_Function);
             Debug.Log("Task failed to complete adding to the retry list");
-            // TODO: Add to retry list
         }
     }
 
